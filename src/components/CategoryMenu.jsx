@@ -28,14 +28,7 @@ export function CategoryMenu() {
         <MenuDivider />
         {categories.map((category) => {
           return (
-            <Link
-              to={
-                `/CategoryJokes/?category=${category}`
-                //pathname: `/CategoryJokes/?category=${category}`,
-                //search: `?category=${category}`,
-              }
-              key={category}
-            >
+            <Link to={`/CategoryJokes/${category}`} key={category}>
               <MenuItem key={category}>{category}</MenuItem>
             </Link>
           );

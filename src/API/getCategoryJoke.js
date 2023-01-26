@@ -2,10 +2,8 @@ import axios from "axios";
 
 export async function getCategoryJoke() {
   try {
-    const query = window.location.search;
-    const urlParams = new URLSearchParams(query);
-    const category = urlParams.get("category");
-    console.log(category);
+    const pathArray = window.location.pathname.split("/");
+    const category = pathArray[2];
     const endpoint = `https://api.chucknorris.io/jokes/random?category=${category}`;
     const response = await axios.get(endpoint);
 

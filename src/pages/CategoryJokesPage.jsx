@@ -1,33 +1,99 @@
-import { VStack, Button, Box, Text } from "@chakra-ui/react";
+import { VStack, Button, Box } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import JokeCard from "../components/JokeCard";
-import { getCategoryJoke } from "../API/getCategoryJoke";
+import { getCategoryJoke } from "../api/getCategoryJoke";
 import { useParams } from "react-router-dom";
+import chuck1 from "../assets/chuck1.jpeg";
+import chuck2 from "../assets/chuck2.jpeg";
+import chuck3 from "../assets/chuck3.jpeg";
+import chuck4 from "../assets/chuck4.jpeg";
+import chuck5 from "../assets/chuck5.jpeg";
+import chuck6 from "../assets/chuck6.jpeg";
+import chuck7 from "../assets/chuck7.jpeg";
+import chuck8 from "../assets/chuck8.jpeg";
+import chuck9 from "../assets/chuck9.jpeg";
+import chuck10 from "../assets/chuck10.jpeg";
+import SearchInput from "../components/SearchInput";
+
+const images = [
+  chuck1,
+  chuck2,
+  chuck3,
+  chuck4,
+  chuck5,
+  chuck5,
+  chuck6,
+  chuck7,
+  chuck8,
+  chuck9,
+  chuck10,
+];
+
+const INITIAL_STATE = {
+  data: [],
+  isLoading: false,
+  isError: false,
+};
 
 export default function CategoryJokesPage() {
-  const [joke, setJoke] = useState([]);
+  const [jokes, setJokes] = useState(INITIAL_STATE);
+  const [randomJokes, setRandomJokes] = useState([]);
+  const [previousJokes, setPreviousJokes] = useState(new Set());
+  const [searchTerm, setSearchTerm] = useState("");
   const { category } = useParams();
-  console.log(category);
+
+  function fetchRandomJokes(jokes) {
+    let randomJokesTemp = [];
+    for (let i = 0; i < 20; i++) {
+      let randomJoke = jokes.result[Math.floor(Math.random() * jokes.total)];
+      if (!previousJokes.has(randomJoke.id)) {
+        randomJokesTemp.push(randomJoke);
+        previousJokes.add(randomJoke.id);
+      }
+    }
+    setPreviousJokes(previousJokes);
+    return randomJokesTemp;
+  }
 
   useEffect(() => {
-    getCategoryJoke(category).then((data) => setJoke(data));
+    getCategoryJoke(category).then((data) => setJokes(data));
   }, [category]);
+
+  function handleClick() {
+    setRandomJokes(fetchRandomJokes(jokes));
+  }
 
   return (
     <Box px={5}>
       <VStack>
-        <Text>nevim</Text>
-        <Button
-          colorScheme="blue"
-          size="lg"
-          my={2}
-          onClick={() => {
-            getCategoryJoke(category).then((data) => setJoke(data));
+        <SearchInput
+          placeholderText="Search for jokes"
+          onChange={(value) => {
+            setSearchTerm(value);
           }}
-        >
+        />
+        <Button colorScheme="blue" size="lg" my={2} onClick={handleClick}>
           Get new Joke
         </Button>
-        <JokeCard imageSrc={joke.icon_url} theJoke={joke.value} />
+        {/* {isLoading && <Loader />}
+        {jokes.isError && <Error>Upss chyba ...</Error>} */}
+        <Box display="flex" gap={10} flexWrap="wrap" justifyContent="center">
+          {randomJokes
+            ?.filter(
+              (joke) =>
+                joke.value.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                searchTerm === ""
+            )
+            .map((joke) => (
+              <JokeCard
+                key={joke.id}
+                theJoke={joke.value}
+                category={joke.categories}
+                randomImage={images[Math.floor(Math.random() * images.length)]}
+              />
+            ))}
+        </Box>
+        ;
       </VStack>
     </Box>
   );
