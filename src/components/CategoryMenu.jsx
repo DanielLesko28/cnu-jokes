@@ -20,7 +20,7 @@ export function CategoryMenu() {
 
   return (
     <Menu>
-      <MenuButton as={Button} variant={"ghost"} cursor={"pointer"} minW={0}>
+      <MenuButton as={Button} variant="ghost" minW={0}>
         <RxHamburgerMenu />
       </MenuButton>
       <MenuList alignItems={"center"}>
@@ -28,9 +28,16 @@ export function CategoryMenu() {
         <MenuDivider />
         {categories.map((category) => {
           return (
-            //<Link to={`/CategoryJokes`} key={category} state={{ category }}>
-            <MenuItem key={category}>{category}</MenuItem>
-            // </Link>
+            <Link
+              to={
+                `/CategoryJokes/?category=${category}`
+                //pathname: `/CategoryJokes/?category=${category}`,
+                //search: `?category=${category}`,
+              }
+              key={category}
+            >
+              <MenuItem key={category}>{category}</MenuItem>
+            </Link>
           );
         })}
       </MenuList>
