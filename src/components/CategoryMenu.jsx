@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { getCategories } from "../api/getCategories";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { Link } from "react-router-dom";
 
 export function CategoryMenu() {
   const [categories, setCategories] = useState([]);
@@ -28,8 +29,8 @@ export function CategoryMenu() {
         <MenuDivider />
         {categories.map((category) => {
           return (
-            <Link to={`/CategoryJokes/${category}`} key={category}>
-              <MenuItem key={category}>{category}</MenuItem>
+            <Link to={`/category-jokes/${category}`} key={category}>
+              <MenuItem>{category}</MenuItem>
             </Link>
           );
         })}

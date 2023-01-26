@@ -17,7 +17,7 @@ function App() {
             <Route path="/FavoriteJokes" element={<FavoriteJokesPage />} />
             <Route path="*" element={<NotFoundPage />} />
             <Route
-              path="/CategoryJokes/:category"
+              path="/category-jokes/:category"
               element={<CategoryJokesPage />}
             />
           </Routes>

@@ -1,7 +1,7 @@
-import { VStack, Button, Box } from "@chakra-ui/react";
+import { VStack, Box } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import JokeCard from "../components/JokeCard";
-import { getCategoryJoke } from "../api/getCategoryJoke";
+import { getJoke } from "../api/getJoke";
 import { useParams } from "react-router-dom";
 import chuck1 from "../assets/chuck1.jpeg";
 import chuck2 from "../assets/chuck2.jpeg";
@@ -14,6 +14,8 @@ import chuck8 from "../assets/chuck8.jpeg";
 import chuck9 from "../assets/chuck9.jpeg";
 import chuck10 from "../assets/chuck10.jpeg";
 import SearchInput from "../components/SearchInput";
+import Loader from "../components/Loader";
+import Error from "../components/Error";
 
 const images = [
   chuck1,
@@ -36,32 +38,40 @@ const INITIAL_STATE = {
 };
 
 export default function CategoryJokesPage() {
+  const { category } = useParams();
   const [jokes, setJokes] = useState(INITIAL_STATE);
   const [randomJokes, setRandomJokes] = useState([]);
-  const [previousJokes, setPreviousJokes] = useState(new Set());
   const [searchTerm, setSearchTerm] = useState("");
-  const { category } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  function fetchRandomJokes(jokes) {
-    let randomJokesTemp = [];
-    for (let i = 0; i < 20; i++) {
-      let randomJoke = jokes.result[Math.floor(Math.random() * jokes.total)];
-      if (!previousJokes.has(randomJoke.id)) {
-        randomJokesTemp.push(randomJoke);
-        previousJokes.add(randomJoke.id);
-      }
-    }
-    setPreviousJokes(previousJokes);
-    return randomJokesTemp;
+  function generateRandomJokes(jokes) {
+    console.log(jokes);
+    const categoryJokes = jokes.result.filter(
+      (joke) => joke.categories[0] === category
+    );
+
+    setRandomJokes(categoryJokes);
   }
 
   useEffect(() => {
-    getCategoryJoke(category).then((data) => setJokes(data));
-  }, [category]);
+    setIsLoading(true);
+    setError(null);
+    getJoke()
+      .then((data) => {
+        setJokes({ data, isLoading: false, isError: false });
+        generateRandomJokes(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        setError(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
 
-  function handleClick() {
-    setRandomJokes(fetchRandomJokes(jokes));
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category]);
 
   return (
     <Box px={5}>
@@ -72,28 +82,39 @@ export default function CategoryJokesPage() {
             setSearchTerm(value);
           }}
         />
-        <Button colorScheme="blue" size="lg" my={2} onClick={handleClick}>
-          Get new Joke
-        </Button>
-        {/* {isLoading && <Loader />}
-        {jokes.isError && <Error>Upss chyba ...</Error>} */}
+        {isLoading && <Loader />}
+        {error && <Error message={error} />}
         <Box display="flex" gap={10} flexWrap="wrap" justifyContent="center">
-          {randomJokes
-            ?.filter(
-              (joke) =>
-                joke.value.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                searchTerm === ""
-            )
-            .map((joke) => (
-              <JokeCard
-                key={joke.id}
-                theJoke={joke.value}
-                category={joke.categories}
-                randomImage={images[Math.floor(Math.random() * images.length)]}
-              />
-            ))}
+          {searchTerm === ""
+            ? randomJokes.map((joke) => (
+                <JokeCard
+                  key={joke.id}
+                  theJoke={joke.value}
+                  category={joke.categories}
+                  randomImage={
+                    images[Math.floor(Math.random() * images.length)]
+                  }
+                />
+              ))
+            : jokes.result
+                ?.filter(
+                  (joke) =>
+                    joke.value
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase()) || searchTerm === ""
+                )
+                .slice(0, 25)
+                .map((joke) => (
+                  <JokeCard
+                    key={joke.id}
+                    theJoke={joke.value}
+                    category={joke.categories}
+                    randomImage={
+                      images[Math.floor(Math.random() * images.length)]
+                    }
+                  />
+                ))}
         </Box>
-        ;
       </VStack>
     </Box>
   );
