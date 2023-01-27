@@ -8,6 +8,7 @@ import SearchInput from "../components/SearchInput";
 import ScrollToTop from "react-scroll-to-top";
 import "../App.css";
 
+
 import chuck1 from "../assets/chuck1.jpeg";
 import chuck2 from "../assets/chuck2.jpeg";
 import chuck3 from "../assets/chuck3.jpeg";
