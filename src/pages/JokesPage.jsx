@@ -5,7 +5,6 @@ import { getJoke } from "../api/getJoke";
 import Loader from "../components/Loader";
 import Error from "../components/Error";
 import SearchInput from "../components/SearchInput";
-import ScrollToTop from "react-scroll-to-top";
 import "../App.css";
 
 import chuck1 from "../assets/chuck1.jpeg";
@@ -19,6 +18,7 @@ import chuck8 from "../assets/chuck8.jpeg";
 import chuck9 from "../assets/chuck9.jpeg";
 import chuck10 from "../assets/chuck10.jpeg";
 import NumberSlider from "../components/NumberSlider";
+import { ScrollToTopButton } from "../components/ScrollToTopButton";
 
 export function JokesPage() {
   const images = [
@@ -136,7 +136,7 @@ export function JokesPage() {
                 ))}
         </Box>
       </VStack>
-      <ScrollToTop smooth />
+      <ScrollToTopButton />
     </Box>
   );
 }
