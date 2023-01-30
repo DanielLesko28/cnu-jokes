@@ -19,7 +19,6 @@ const JokeCard = ({ theJoke, category, randomImage }) => {
   const maxCardWidth = 200;
   return (
     <Card maxW="sm" borderRadius="lg">
-      {console.log(randomImage)}
       <CardBody>
         <Flex>
           <Image
