@@ -7,8 +7,10 @@ const SearchInput = ({ placeholderText, onChange }) => {
     <Box py="4">
       <InputGroup>
         <Input
+          variant="pill"
           placeholder={placeholderText}
           onChange={(e) => onChange(e.target.value)}
+          px="2"
         />
         <InputRightElement children={<FaSearch cursor="pointer" />} />
       </InputGroup>

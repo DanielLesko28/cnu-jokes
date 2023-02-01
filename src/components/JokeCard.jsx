@@ -36,7 +36,7 @@ const JokeCard = ({ theJoke, category, randomImage }) => {
                 {showMore ? theJoke : `${theJoke?.substring(0, maxCardWidth)}`}
               </Heading>
               <Button
-                variant="primary"
+                variant="outline"
                 color="black"
                 size="xs"
                 // _hover={{
