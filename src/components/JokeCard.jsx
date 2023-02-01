@@ -36,13 +36,12 @@ const JokeCard = ({ theJoke, category, randomImage }) => {
                 {showMore ? theJoke : `${theJoke?.substring(0, maxCardWidth)}`}
               </Heading>
               <Button
-                variant="ghost"
-                background="white"
+                variant="primary"
                 color="black"
                 size="xs"
-                _hover={{
-                  background: "gray.300",
-                }}
+                // _hover={{
+                //   background: "gray.300",
+                // }}
                 onClick={() => setShowMore(!showMore)}
               >
                 {showMore ? "Show less" : "Show more"}
