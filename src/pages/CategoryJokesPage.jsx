@@ -7,28 +7,24 @@ import { SearchInput } from "../components/SearchInput";
 import { Loader } from "../components/Loader";
 import { Error } from "../components/Error";
 import { ScrollToTopButton } from "../components/ScrollToTopButton";
-
-const INITIAL_STATE = {
-  data: [],
-  isLoading: false,
-  isError: false,
-};
+import { NumberSlider } from "../components/NumberSlider";
 
 export default function CategoryJokesPage() {
   const { category } = useParams();
-  const [jokes, setJokes] = useState(INITIAL_STATE);
   const [categoryJokes, setCategoryJokes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sliderValue, setSliderValue] = useState(25);
+
   const numberOfImages = 10;
   const toast = useToast();
 
   function generateCategoryJokes(jokes) {
-    const categoryJokes = jokes.result.filter(
-      (joke) => joke.categories[0] === category
+    const singleCategoryJokes = jokes.result.filter((joke) =>
+      joke.categories.includes(category)
     );
-    setCategoryJokes(categoryJokes);
+    setCategoryJokes(singleCategoryJokes);
   }
 
   useEffect(() => {
@@ -36,7 +32,7 @@ export default function CategoryJokesPage() {
     setError(null);
     getData("search?query=chuck")
       .then((data) => {
-        setJokes({ data, isLoading: false, isError: false });
+        //setJokes({ data, isLoading: false, isError: false });
         generateCategoryJokes(data);
       })
       .catch((err) => {
@@ -64,28 +60,38 @@ export default function CategoryJokesPage() {
             setSearchTerm(value);
           }}
         />
+        {categoryJokes.length > 25 && (
+          <NumberSlider
+            maxSliderValue={categoryJokes.length}
+            inputValue={sliderValue}
+            onChangeEnd={(val) => {
+              setSliderValue(val);
+            }}
+          />
+        )}
         {isLoading && <Loader />}
         {error && <Error message={error} />}
         <Box display="flex" gap={10} flexWrap="wrap" justifyContent="center">
-          {searchTerm === ""
-            ? categoryJokes.map((joke) => (
-                <JokeCard
-                  key={joke.id}
-                  joke={joke.value}
-                  category={joke.categories}
-                  randomImage={`/ChuckNorrisImage/chuck${
-                    Math.floor(Math.random() * numberOfImages) + 1
-                  }.jpeg`}
-                />
-              ))
-            : jokes.result
+          {searchTerm === "" && categoryJokes.length > 25
+            ? categoryJokes
+                .map((joke) => (
+                  <JokeCard
+                    key={joke.id}
+                    joke={joke.value}
+                    category={joke.categories}
+                    randomImage={`/ChuckNorrisImage/chuck${
+                      Math.floor(Math.random() * numberOfImages) + 1
+                    }.jpeg`}
+                  />
+                ))
+                .slice(0, sliderValue)
+            : categoryJokes
                 ?.filter(
                   (joke) =>
                     joke.value
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase()) || searchTerm === ""
                 )
-                .slice(0, 25)
                 .map((joke) => (
                   <JokeCard
                     key={joke.id}
