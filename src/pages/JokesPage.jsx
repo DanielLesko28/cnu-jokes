@@ -1,14 +1,16 @@
 import { VStack, Button, Box } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import JokeCard from "../components/JokeCard";
-import { getJoke } from "../api/getJoke";
-import Loader from "../components/Loader";
-import Error from "../components/Error";
-import SearchInput from "../components/SearchInput";
+import { JokeCard } from "../components/JokeCard";
+import { getData } from "../api/getData";
+import { Loader } from "../components/Loader";
+import { Error } from "../components/Error";
+import { SearchInput } from "../components/SearchInput";
 import "../App.css";
+import { useToast } from "@chakra-ui/react";
 
-import NumberSlider from "../components/NumberSlider";
+import { NumberSlider } from "../components/NumberSlider";
 import { ScrollToTopButton } from "../components/ScrollToTopButton";
+import { GenerateRandomJokes } from "../components/GenerateRandomJokes";
 
 export function JokesPage() {
   const INITIAL_STATE = {
@@ -23,28 +25,26 @@ export function JokesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sliderValue, setSliderValue] = useState(25);
-  const numberOfImagies = 10;
 
-  function generateRandomJokes(jokes, sliderValue) {
-    const randomJokesArray = [];
-    for (let i = 0; i < sliderValue; i++) {
-      const randomJokeIndex = Math.floor(Math.random() * jokes.total);
-      const randomJoke = jokes.result[randomJokeIndex];
-      randomJokesArray.push(randomJoke);
-    }
-    setRandomJokes(randomJokesArray);
-  }
+  const numberOfImages = 10;
+  const toast = useToast();
 
   useEffect(() => {
     setIsLoading(true);
     setError(null);
-    getJoke()
+    getData("search?query=chu")
       .then((data) => {
         setJokes(data);
-        generateRandomJokes(data, sliderValue);
+        setRandomJokes(GenerateRandomJokes(data, sliderValue));
       })
       .catch((err) => {
-        setError(err);
+        setError(err.message);
+        toast({
+          description: "Something went wrong",
+          status: "error",
+          duration: 4000,
+          isClosable: false,
+        });
       })
       .finally(() => {
         setIsLoading(false);
@@ -55,8 +55,14 @@ export function JokesPage() {
   function handleClick() {
     setIsLoading(true);
     setError(null);
-    generateRandomJokes(jokes, sliderValue);
+    setRandomJokes(GenerateRandomJokes(jokes, sliderValue));
     setIsLoading(false);
+    toast({
+      description: "Successfully generated jokes",
+      status: "success",
+      duration: 4000,
+      isClosable: true,
+    });
   }
 
   return (
@@ -70,10 +76,10 @@ export function JokesPage() {
         />
 
         <NumberSlider
-          value={sliderValue}
+          inputValue={sliderValue}
           onChangeEnd={(val) => {
             setSliderValue(val);
-            generateRandomJokes(jokes, val);
+            setRandomJokes(GenerateRandomJokes(jokes, val));
           }}
         />
 
@@ -87,10 +93,10 @@ export function JokesPage() {
             ? randomJokes.map((joke) => (
                 <JokeCard
                   key={joke.id}
-                  theJoke={joke.value}
+                  joke={joke.value}
                   category={joke.categories}
                   randomImage={`/ChuckNorrisImage/chuck${
-                    Math.floor(Math.random() * numberOfImagies) + 1
+                    Math.floor(Math.random() * numberOfImages) + 1
                   }.jpeg`}
                 />
               ))
@@ -105,11 +111,11 @@ export function JokesPage() {
                 .map((joke) => (
                   <JokeCard
                     key={joke.id}
-                    theJoke={joke.value}
+                    joke={joke.value}
                     category={joke.categories}
-                    randomImage={`/ChuckNorrisImage/chuck${Math.floor(
-                      Math.random() * numberOfImagies
-                    )}.jpeg`}
+                    randomImage={`/ChuckNorrisImage/chuck${
+                      Math.floor(Math.random() * numberOfImages) + 1
+                    }.jpeg`}
                   />
                 ))}
         </Box>

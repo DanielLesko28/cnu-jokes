@@ -6,34 +6,37 @@ import {
   Heading,
   Text,
   Button,
-  Spacer,
-  Tooltip,
   VStack,
   CardFooter,
   Flex,
 } from "@chakra-ui/react";
-import { FaStar } from "react-icons/fa";
 
-const JokeCard = ({ theJoke, category, randomImage }) => {
+export function JokeCard({ joke, category, randomImage }) {
   const [showMore, setShowMore] = useState(false);
   const maxCardWidth = 200;
+
   return (
-    <Card maxW="sm" borderRadius="lg">
+    <Card maxW="sm" borderRadius="lg" width="100%">
       <CardBody>
-        <Flex>
+        <Flex flexDirection={["column", "row"]} alignItems="center">
           <Image
-            mr="2"
+            mr={["0", "2"]}
             src={randomImage}
             alt="Chuck Norris"
             borderRadius="lg"
-            boxSize="150px"
+            boxSize={["100%", "150px"]}
             objectFit="cover"
           />
 
-          {theJoke?.length > maxCardWidth ? (
+          {joke?.length > maxCardWidth ? (
             <VStack>
-              <Heading maxWidth={maxCardWidth} px="2" size="xs">
-                {showMore ? theJoke : `${theJoke?.substring(0, maxCardWidth)}`}
+              <Heading
+                maxWidth={maxCardWidth}
+                px="2"
+                size="xs"
+                textAlign="center"
+              >
+                {showMore ? joke : `${joke?.substring(0, maxCardWidth)}...`}
               </Heading>
               <Button
                 variant="outline"
@@ -44,12 +47,12 @@ const JokeCard = ({ theJoke, category, randomImage }) => {
                 // }}
                 onClick={() => setShowMore(!showMore)}
               >
-                {showMore ? "Show less" : "Show more"}
+                {showMore ? " Show less" : " Show more"}
               </Button>
             </VStack>
           ) : (
-            <Heading maxWidth={maxCardWidth} size="xs">
-              {theJoke}
+            <Heading maxWidth={maxCardWidth} size="xs" textAlign="center">
+              {joke}
             </Heading>
           )}
         </Flex>
@@ -58,40 +61,14 @@ const JokeCard = ({ theJoke, category, randomImage }) => {
       {category.length > 0 ? (
         <CardFooter>
           <Flex justifyContent="space-between" width="100%">
-            <Text mt="2">
+            <Text textAlign="center">
               Category: <b>{category}</b>
             </Text>
-            <Spacer />
-            <Tooltip label="Is this joke awesome? You can save it ...">
-              <Button variant="ghost">
-                <Text color="orange.300">
-                  <FaStar />
-                </Text>
-              </Button>
-            </Tooltip>
           </Flex>
         </CardFooter>
       ) : (
-        <CardFooter h="20">
-          <Flex
-            justifyContent="space-between"
-            alignItems="flex-start"
-            width="100%"
-          >
-            {/* <Text></Text> */}
-            <Spacer />
-            <Tooltip label="Is this joke awesome? You can save it ...">
-              <Button variant="ghost">
-                <Text color="orange.300">
-                  <FaStar />
-                </Text>
-              </Button>
-            </Tooltip>
-          </Flex>
-        </CardFooter>
+        <></>
       )}
     </Card>
   );
-};
-
-export default JokeCard;
+}

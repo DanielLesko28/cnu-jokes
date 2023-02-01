@@ -6,11 +6,11 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-const NumberSlider = ({ inputValue, onChangeEnd }) => {
-  const [value, setValue] = useState(inputValue);
+export function NumberSlider({ inputValue, onChangeEnd }) {
+  const [currentValue, setCurrentValue] = useState(inputValue);
 
   const handleChangeEnd = (val) => {
-    setValue(val);
+    setCurrentValue(val);
     onChangeEnd(val);
   };
 
@@ -18,9 +18,11 @@ const NumberSlider = ({ inputValue, onChangeEnd }) => {
     <Slider
       min={0}
       max={50}
+
       w={["100%", "50%"]}
-      value={value}
-      onChange={(val) => setValue(val)}
+      zIndex="0"
+      value={currentValue}
+      onChange={(val) => setCurrentValue(val)}
       onChangeEnd={(val) => handleChangeEnd(val)}
     >
       <SliderTrack>
@@ -29,11 +31,9 @@ const NumberSlider = ({ inputValue, onChangeEnd }) => {
       <SliderThumb
         fontSize="sm"
         boxSize="32px"
-        children={value}
+        children={currentValue}
         color="black"
       />
     </Slider>
   );
-};
-
-export default NumberSlider;
+}
