@@ -30,9 +30,9 @@ export default function CategoryJokesPage() {
   useEffect(() => {
     setIsLoading(true);
     setError(null);
+    setSliderValue(25);
     getData("search?query=chuck")
       .then((data) => {
-        //setJokes({ data, isLoading: false, isError: false });
         generateCategoryJokes(data);
       })
       .catch((err) => {
