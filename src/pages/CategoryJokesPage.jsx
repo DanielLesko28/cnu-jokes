@@ -33,7 +33,9 @@ export default function CategoryJokesPage() {
           />
         )}
 
-        <Tag>Now you are at {category} category</Tag>
+        <Tag p="2" px="4">
+          Now you are at {category} category
+        </Tag>
         {isLoading && <Loader />}
         {error && <Error message={error} />}
         <Box display="flex" gap={10} flexWrap="wrap" justifyContent="center">
