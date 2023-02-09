@@ -1,5 +1,5 @@
 import { VStack, Button, Box } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Loader } from "../components/Loader";
 import { Error } from "../components/Error";
@@ -9,21 +9,42 @@ import { ScrollToTopButton } from "../components/ScrollToTopButton";
 import { JokesListing } from "../components/JokesListing";
 import { useJokes } from "../utils/hooks/useJokes";
 import { INITIAL_SELECTED_JOKE_COUNT } from "../utils/constants";
+import { getData } from "../utils/api/getData";
 
-export default function JokesPage() {
+export async function getServerSideProps() {
+  const initJokes = await getData(`search?query=chu`);
+  const finalJokes = initJokes.result;
+
+  return {
+    props: {
+      finalJokes,
+    },
+  };
+}
+
+export default function JokesPage({ finalJokes }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedJokeCount, setSelectedJokeCount] = useState(
     INITIAL_SELECTED_JOKE_COUNT
   );
+  const [jokes, setJokes] = useState(finalJokes);
 
   function handleSearchInputChange(value) {
     value.length > 2 ? setSearchTerm(value) : setSearchTerm("");
   }
 
-  const { isLoading, error, jokes, randomize } = useJokes(
+  const { isLoading, error, randomize } = useJokes(
     searchTerm,
     selectedJokeCount
   );
+  const allJokes =
+    searchTerm === ""
+      ? jokes.slice(0, selectedJokeCount)
+      : jokes
+          .filter(({ value }) =>
+            value.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+          .slice(0, selectedJokeCount);
 
   return (
     <Box px={5}>
@@ -41,7 +62,7 @@ export default function JokesPage() {
         </Button>
         {isLoading && <Loader />}
         {error && <Error message={error} />}
-        {!isLoading && !error && <JokesListing filterJokes={jokes} />}
+        {!isLoading && !error && <JokesListing filterJokes={allJokes} />}
       </VStack>
       <ScrollToTopButton />
     </Box>
