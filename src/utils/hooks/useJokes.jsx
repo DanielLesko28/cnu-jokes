@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 import { getData } from "../api/getData";
 
-export function useJokes(searchTerm, selectedJokeCount) {
-  const [jokes, setJokes] = useState([]);
+export function useJokes(searchTerm, selectedJokeCount, fetchedJokes) {
+  const [jokes, setJokes] = useState(fetchedJokes);
   const [randomizedJokes, setRandomizedJokes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -50,7 +50,6 @@ export function useJokes(searchTerm, selectedJokeCount) {
     isLoading,
     error,
     randomize: increment,
-    setJokes,
     searchQuery,
   };
 }

@@ -29,16 +29,12 @@ export default function JokesPage({ fetchedJokes }) {
   );
 
   const { isLoading, error, jokes, randomize, setJokes, searchQuery } =
-    useJokes(searchTerm, selectedJokeCount);
+    useJokes(searchTerm, selectedJokeCount, fetchedJokes);
 
   function handleSearchInputChange(value) {
     value.length > 2 ? setSearchTerm(value) : setSearchTerm("");
     searchQuery();
   }
-
-  useEffect(() => {
-    setJokes(fetchedJokes);
-  }, []);
 
   return (
     <Box px={5}>

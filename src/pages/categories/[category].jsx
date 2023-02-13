@@ -14,6 +14,7 @@ import {
 import { JokesListing } from "../../components/JokesListing";
 import { INITIAL_SELECTED_JOKE_COUNT } from "../../utils/constants";
 import { getData } from "../../utils/api/getData";
+import { AppLayout } from "../../components/AppLayout";
 
 export async function getServerSideProps() {
   const initFetchedJokes = await getData(`search?query=chu`);
@@ -33,12 +34,10 @@ export default function CategoryJokesPage({ fetchedJokes }) {
   );
   const router = useRouter();
   const { category } = router.query;
-  const { categoryJokes, isLoading, error, setCategoryJokes } =
-    useCategories(category);
-
-  useEffect(() => {
-    setCategoryJokes(generateCategoryJokes(fetchedJokes, category));
-  }, [category]);
+  const { categoryJokes, isLoading, error } = useCategories(
+    category,
+    fetchedJokes
+  );
 
   const filteredJokes =
     searchTerm === ""
