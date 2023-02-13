@@ -12,39 +12,33 @@ import { INITIAL_SELECTED_JOKE_COUNT } from "../utils/constants";
 import { getData } from "../utils/api/getData";
 
 export async function getServerSideProps() {
-  const initJokes = await getData(`search?query=chu`);
-  const finalJokes = initJokes.result;
+  const initFetchedJokes = await getData(`search?query=chu`);
+  const fetchedJokes = initFetchedJokes.result;
 
   return {
     props: {
-      finalJokes,
+      fetchedJokes,
     },
   };
 }
 
-export default function JokesPage({ finalJokes }) {
+export default function JokesPage({ fetchedJokes }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedJokeCount, setSelectedJokeCount] = useState(
     INITIAL_SELECTED_JOKE_COUNT
   );
-  const [jokes, setJokes] = useState(finalJokes);
+
+  const { isLoading, error, jokes, randomize, setJokes, searchQuery } =
+    useJokes(searchTerm, selectedJokeCount);
 
   function handleSearchInputChange(value) {
     value.length > 2 ? setSearchTerm(value) : setSearchTerm("");
+    searchQuery();
   }
 
-  const { isLoading, error, randomize } = useJokes(
-    searchTerm,
-    selectedJokeCount
-  );
-  const allJokes =
-    searchTerm === ""
-      ? jokes.slice(0, selectedJokeCount)
-      : jokes
-          .filter(({ value }) =>
-            value.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-          .slice(0, selectedJokeCount);
+  useEffect(() => {
+    setJokes(fetchedJokes);
+  }, []);
 
   return (
     <Box px={5}>
@@ -62,7 +56,7 @@ export default function JokesPage({ finalJokes }) {
         </Button>
         {isLoading && <Loader />}
         {error && <Error message={error} />}
-        {!isLoading && !error && <JokesListing filterJokes={allJokes} />}
+        {!isLoading && !error && <JokesListing filterJokes={jokes} />}
       </VStack>
       <ScrollToTopButton />
     </Box>

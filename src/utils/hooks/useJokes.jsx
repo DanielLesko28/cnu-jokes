@@ -12,28 +12,27 @@ export function useJokes(searchTerm, selectedJokeCount) {
   const [iteration, setIteration] = useState(0);
   const increment = () => setIteration(iteration + 1);
 
-  // useEffect(() => {
-  //   const query = searchTerm.length < 3 ? "chu" : searchTerm;
-  //   setIsLoading(true);
-  //   setError(null);
-  //   getData(`search?query=${query}`)
-  //     .then((data) => {
-  //       setJokes(data.result);
-  //     })
-  //     .catch((err) => {
-  //       setError(err.message);
-  //       toast({
-  //         description: "Something went wrong",
-  //         status: "error",
-  //         duration: 4000,
-  //         isClosable: false,
-  //       });
-  //     })
-  //     .finally(() => {
-  //       setIsLoading(false);
-  //     });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [searchTerm]);
+  function searchQuery() {
+    const query = searchTerm.length < 3 ? "chu" : searchTerm;
+    setIsLoading(true);
+    setError(null);
+    getData(`search?query=${query}`)
+      .then((data) => {
+        setJokes(data.result);
+      })
+      .catch((err) => {
+        setError(err.message);
+        toast({
+          description: "Something went wrong",
+          status: "error",
+          duration: 4000,
+          isClosable: false,
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
 
   useEffect(() => {
     setRandomizedJokes(
@@ -51,5 +50,7 @@ export function useJokes(searchTerm, selectedJokeCount) {
     isLoading,
     error,
     randomize: increment,
+    setJokes,
+    searchQuery,
   };
 }
