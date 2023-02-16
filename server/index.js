@@ -1,8 +1,10 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { RESTDataSource } from "@apollo/datasource-rest";
+
 import { typeDefs } from "./schema.js";
 import { resolvers } from "./resolvers.js";
+
 class ChuckNorrisAPI extends RESTDataSource {
   baseURL = "https://api.chucknorris.io/";
 
