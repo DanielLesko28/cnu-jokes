@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Category } from "../utils/types";
 import {
   Button,
   Menu,
@@ -14,12 +15,15 @@ import { getCategories } from "../utils/api/getCategories";
 
 export function CategoryMenu() {
   const [categories, setCategories] = useState([]);
+  console.log(categories);
 
-  useEffect(function fetchCategories() {
-    //getCategories().then(setCategories(fetchCategories););
-
-    console.log(categories);
+  useEffect(() => {
+    getCategories().then((cats) => {
+      setCategories(cats);
+    });
   }, []);
+
+  console.log("this is categories state", categories);
 
   return (
     <Menu>
