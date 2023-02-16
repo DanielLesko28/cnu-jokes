@@ -1,6 +1,4 @@
-import { useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-
 import { Joke } from "../types";
 
 export function useJokes(selectedJokeCount: number, fetchedJokes: Joke[]) {
@@ -8,7 +6,6 @@ export function useJokes(selectedJokeCount: number, fetchedJokes: Joke[]) {
   const [randomizedJokes, setRandomizedJokes] = useState<Joke[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const toast = useToast();
   const [iteration, setIteration] = useState(0);
   const increment = () => setIteration(iteration + 1);
 
