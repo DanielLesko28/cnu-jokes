@@ -2,6 +2,7 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { RESTDataSource } from "@apollo/datasource-rest";
 import gql from "graphql-tag";
+import { typeDefs } from "./schema.js";
 
 // const API_URL = "https://https://api.chucknorris.io/";
 
@@ -22,22 +23,22 @@ class ChuckNorrisAPI extends RESTDataSource {
 // });
 
 //This is my SCHEMA
-const typeDefs = gql`
-  type Joke {
-    id: String!
-    value: String!
-    categories: [String!]
-  }
+// const typeDefs = gql`
+//   type Joke {
+//     id: String!
+//     value: String!
+//     categories: [String!]
+//   }
 
-  type AllJokes {
-    result: [Joke!]
-  }
+//   type AllJokes {
+//     result: [Joke!]
+//   }
 
-  type Query {
-    allJokes: AllJokes!
-    categories: [String!]
-  }
-`;
+//   type Query {
+//     allJokes: AllJokes!
+//     categories: [String!]
+//   }
+// `;
 
 //Here are my Resolvers
 const resolvers = {
