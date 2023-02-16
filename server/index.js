@@ -21,12 +21,6 @@ class ChuckNorrisAPI extends RESTDataSource {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  // dataSources,
-  // dataSources: () => {
-  //   return {
-  //     chuckNorrisAPI: new ChuckNorrisAPI(),
-  //   };
-  // },
 });
 
 //adding data sources to my server's context function
